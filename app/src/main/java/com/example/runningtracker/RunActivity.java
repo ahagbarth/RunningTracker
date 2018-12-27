@@ -31,6 +31,7 @@ public class RunActivity extends AppCompatActivity {
     int initialDistance;
 
 
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -39,9 +40,17 @@ public class RunActivity extends AppCompatActivity {
             broadcastReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    //distance = Integer.valueOf((Integer) intent.getExtras().get("coordinates")) ;
-                    //Toast.makeText(context, distance, Toast.LENGTH_SHORT).show();
-                    textView.append("\n" +intent.getExtras().get("coordinates"));
+
+                    textView.setText("" +intent.getExtras().get("coordinates"));
+
+
+                    distance = intent.getIntExtra("overallDistance",1);
+
+
+
+                    Toast.makeText(context, ""+ distance, Toast.LENGTH_SHORT).show();
+
+
 
 
                 }

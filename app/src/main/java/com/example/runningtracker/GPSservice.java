@@ -26,6 +26,7 @@ public class GPSservice extends Service {
     private LocationListener listener;
     private LocationManager locationManager;
 
+    int overallDistance;
 
     private double oldLongitude;
     private double oldLatitude;
@@ -85,10 +86,11 @@ public class GPSservice extends Service {
                 double distance = distanceCalculated(oldLongitude,newLongitude,oldLatitude,newLatitude);
                 int Distance = (int) distance;
 
-
+                overallDistance = overallDistance + Distance;
 
                 Intent i = new Intent("location_update");
                 i.putExtra("coordinates", Distance);
+                i.putExtra("overallDistance", overallDistance);
                 sendBroadcast(i);
 
 

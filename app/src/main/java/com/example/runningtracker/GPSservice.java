@@ -22,9 +22,9 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.widget.Toast;
 
 public class GPSservice extends Service {
-
     private LocationListener listener;
     private LocationManager locationManager;
+
 
     int overallDistance;
 
@@ -34,55 +34,22 @@ public class GPSservice extends Service {
     String CHANNEL_ID = "1";
     int idNotification = 1;
 
-
-    public GPSservice() {
-    }
-
-
-
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
-    /*
-        @Override
-        public int onStartCommand(Intent intent, int flags, int startId) {
-            Toast.makeText(this, "Service Started", Toast.LENGTH_LONG).show();
-            Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            return super.onStartCommand(intent, flags, startId);
-        }
-    */
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Toast.makeText(this, "Service Destroyed", Toast.LENGTH_LONG).show();
-        if (locationManager != null) {
-            //noinspection MissingPermission
-            locationManager.removeUpdates(listener);
-        }
+        return null;
     }
 
     @Override
     public void onCreate() {
 
-
-        locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-
-
         Toast.makeText(this, "Service Created", Toast.LENGTH_SHORT).show();
 
         listener = new LocationListener() {
-
             @Override
             public void onLocationChanged(Location location) {
 
-
                 double newLongitude = location.getLongitude();
                 double newLatitude = location.getLatitude();
-
-
                 double distance = distanceCalculated(oldLongitude,newLongitude,oldLatitude,newLatitude);
                 int Distance = (int) distance;
 
@@ -98,6 +65,12 @@ public class GPSservice extends Service {
                 oldLatitude = newLatitude;
 
 
+/*
+                Intent i = new Intent("location_update");
+                i.putExtra("coordinates", location.getLongitude() + " " + location.getLatitude());
+                sendBroadcast(i);
+*/
+
             }
 
             @Override
@@ -107,8 +80,6 @@ public class GPSservice extends Service {
 
             @Override
             public void onProviderEnabled(String s) {
-
-                
 
             }
 
@@ -120,7 +91,7 @@ public class GPSservice extends Service {
             }
         };
 
-
+        locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 
         //noinspection MissingPermission
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -133,11 +104,9 @@ public class GPSservice extends Service {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 5
-                , listener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 5, listener);
 
     }
-
 
 
     protected double distanceCalculated(double oldLongitude, double newLongitude,double oldLatitude, double newLatitude) {
@@ -160,35 +129,12 @@ public class GPSservice extends Service {
 
     }
 
-    private void createNotification() {
-        NotificationManager notificationManager = (NotificationManager)
-                getSystemService(NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-        {
-            CharSequence name = "Running";
-            String description = "Running";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name,
-                    importance);
-            channel.setDescription(description);
-
-            notificationManager.createNotificationChannel(channel);
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(locationManager != null){
+            //noinspection MissingPermission
+            locationManager.removeUpdates(listener);
         }
-
-        Intent intent = new Intent(this, RunActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,
-                CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_running)
-                .setContentTitle("Running Tracker")
-                .setContentText("Tracking Run")
-                .setOngoing(true)
-                .setContentIntent(pendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-        notificationManager.notify(idNotification, mBuilder.build());
-        startForeground(idNotification, mBuilder.build());
-
     }
 }

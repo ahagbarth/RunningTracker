@@ -9,12 +9,13 @@
 
     <Button
         android:id="@+id/btnRun"
-        android:layout_width="182dp"
-        android:layout_height="185dp"
+        android:layout_width="239dp"
+        android:layout_height="228dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="63dp"
+        android:layout_marginTop="60dp"
         android:background="@drawable/shape_round"
-        android:text="Start Run" />
+        android:text="Start Run"
+        android:textSize="44sp" />
 
 </RelativeLayout>

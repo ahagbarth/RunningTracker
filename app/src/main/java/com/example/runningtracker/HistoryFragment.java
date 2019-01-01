@@ -9,9 +9,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,17 +23,24 @@ public class HistoryFragment extends Fragment {
     //private RecyclerView.LayoutManager layoutManager;
     //private List<String> list;
     //private RecyclerAdapter adapter;
+    //ListAdapter adapter;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.history_fragment, container, false);
 
-        String[] menuItems = {"do omething", "do something else", "do yet another thing"};
+        DBHelper dbHelper = new DBHelper(getContext());
+        ArrayList<Runs> runList;
+
+        runList = dbHelper.getRecipeList();
+
+       // String[] menuItems = {"do omething", "do something else", "do yet another thing"};
 
         ListView listView = (ListView) view.findViewById(R.id.listView);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, menuItems);
+        ListAdapter adapter = new ListAdapter(getActivity(), runList);
         listView.setAdapter(adapter);
 
 

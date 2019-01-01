@@ -15,11 +15,17 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
+import android.widget.Chronometer;
 import android.widget.Toast;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GPSservice extends Service {
     private LocationListener listener;
@@ -34,6 +40,13 @@ public class GPSservice extends Service {
     String CHANNEL_ID = "1";
     int idNotification = 1;
 
+    Chronometer chronometer;
+    private static final int LOC_API_CALL_INTERVAL = 60 * 1000;
+
+    Timer timer;
+    long seconds;
+
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -42,7 +55,29 @@ public class GPSservice extends Service {
     @Override
     public void onCreate() {
 
+        chronometer = new Chronometer(GPSservice.this);
+        chronometer.setBase(SystemClock.elapsedRealtime());
+        chronometer.start();
+
+        startTimer();
+
+
+
         Toast.makeText(this, "Service Created", Toast.LENGTH_SHORT).show();
+        locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+
+        timer=new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+
+                long millis=SystemClock.elapsedRealtime() - chronometer.getBase();
+                seconds = (millis / 1000);
+                Log.e("timefortest", "" + seconds);
+                Toast.makeText(GPSservice.this, "" + seconds, Toast.LENGTH_SHORT).show();
+            }
+        }, LOC_API_CALL_INTERVAL, LOC_API_CALL_INTERVAL);
+
 
         listener = new LocationListener() {
             @Override
@@ -50,17 +85,18 @@ public class GPSservice extends Service {
 
                 double newLongitude = location.getLongitude();
                 double newLatitude = location.getLatitude();
+
                 double distance = distanceCalculated(oldLongitude,newLongitude,oldLatitude,newLatitude);
                 int Distance = (int) distance;
 
                 overallDistance = overallDistance + Distance;
 
                 Intent i = new Intent("location_update");
-                i.putExtra("coordinates", Distance);
+                //i.putExtra("coordinates", Distance);
                 i.putExtra("overallDistance", overallDistance);
                 sendBroadcast(i);
 
-
+                Toast.makeText(GPSservice.this, "" + overallDistance, Toast.LENGTH_SHORT).show();
                 oldLongitude = newLongitude;
                 oldLatitude = newLatitude;
 
@@ -91,7 +127,7 @@ public class GPSservice extends Service {
             }
         };
 
-        locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+
 
         //noinspection MissingPermission
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -105,7 +141,13 @@ public class GPSservice extends Service {
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 5, listener);
-
+        if(locationManager!=null) {
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (location!=null) {
+                oldLatitude = location.getLatitude();
+                oldLongitude = location.getLongitude();
+            }
+        }
     }
 
 
@@ -136,5 +178,37 @@ public class GPSservice extends Service {
             //noinspection MissingPermission
             locationManager.removeUpdates(listener);
         }
+
+        stopTimer();
+
+    }
+
+    public void startTimer(){
+        if(timer!=null ){
+            return;
+        }
+        timer=new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+
+                long millis=SystemClock.elapsedRealtime() - chronometer.getBase();
+                seconds = (millis / 1000);
+                Log.e("timefortest", "" + seconds);
+                Toast.makeText(GPSservice.this, "" + seconds, Toast.LENGTH_SHORT).show();
+            }
+        }, LOC_API_CALL_INTERVAL, LOC_API_CALL_INTERVAL);
+
+    }
+
+    public void stopTimer(){
+        if(null!=timer){
+            timer.cancel();
+            timer=null;
+
+
+        }
+
     }
 }
+

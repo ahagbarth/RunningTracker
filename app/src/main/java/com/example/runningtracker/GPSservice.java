@@ -21,7 +21,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
-import android.widget.Chronometer;
+
 import android.widget.Toast;
 
 import java.util.Timer;
@@ -40,11 +40,6 @@ public class GPSservice extends Service {
     String CHANNEL_ID = "1";
     int idNotification = 1;
 
-    Chronometer chronometer;
-    private static final int LOC_API_CALL_INTERVAL = 60 * 1000;
-
-    Timer timer;
-    long seconds;
 
 
     @Override
@@ -55,28 +50,51 @@ public class GPSservice extends Service {
     @Override
     public void onCreate() {
 
-        chronometer = new Chronometer(GPSservice.this);
-        chronometer.setBase(SystemClock.elapsedRealtime());
-        chronometer.start();
 
-        startTimer();
+    //Creates the notification for when service is activated
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Running Tracker";
+            String description = "Tracking Run";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager2 = getSystemService(NotificationManager.class);
+            notificationManager2.createNotificationChannel(channel);
+        }
+
+        Intent intent = new Intent(this, RunActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+
+
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_running)
+                .setContentTitle("Running Tracker")
+                .setContentText("Time ran: " )
+                .setContentIntent(pendingIntent)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true);
+
+        // notificationId is a unique int for each notification that you must define
+        notificationManager.notify(1, mBuilder.build());
+
+
+    //
+
+
+//Handles The GPS aspect
 
         Toast.makeText(this, "Service Created", Toast.LENGTH_SHORT).show();
         locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 
-        timer=new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
 
-                long millis=SystemClock.elapsedRealtime() - chronometer.getBase();
-                seconds = (millis / 1000);
-                Log.e("timefortest", "" + seconds);
-                Toast.makeText(GPSservice.this, "" + seconds, Toast.LENGTH_SHORT).show();
-            }
-        }, LOC_API_CALL_INTERVAL, LOC_API_CALL_INTERVAL);
 
 
         listener = new LocationListener() {
@@ -152,7 +170,7 @@ public class GPSservice extends Service {
 
 
     protected double distanceCalculated(double oldLongitude, double newLongitude,double oldLatitude, double newLatitude) {
-
+/*
         final int R = 6371; // Radius of the earth
 
         double latDistance = Math.toRadians(newLatitude - oldLatitude);
@@ -167,7 +185,20 @@ public class GPSservice extends Service {
 
         distance = Math.pow(distance, 2);
 
-        return Math.sqrt(distance);
+*/
+        Location locationA = new Location("LocationA");
+        locationA.setLatitude(oldLatitude);
+        locationA.setLongitude(oldLongitude);
+
+        Location locationB = new Location("LocationB");
+        locationB.setLongitude(newLongitude);
+        locationB.setLatitude(newLatitude);
+
+        float distance = locationA.distanceTo(locationB);
+
+
+
+        return distance /* Math.sqrt(distance)*/;
 
     }
 
@@ -179,36 +210,10 @@ public class GPSservice extends Service {
             locationManager.removeUpdates(listener);
         }
 
-        stopTimer();
 
     }
 
-    public void startTimer(){
-        if(timer!=null ){
-            return;
-        }
-        timer=new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-
-                long millis=SystemClock.elapsedRealtime() - chronometer.getBase();
-                seconds = (millis / 1000);
-                Log.e("timefortest", "" + seconds);
-                Toast.makeText(GPSservice.this, "" + seconds, Toast.LENGTH_SHORT).show();
-            }
-        }, LOC_API_CALL_INTERVAL, LOC_API_CALL_INTERVAL);
-
-    }
-
-    public void stopTimer(){
-        if(null!=timer){
-            timer.cancel();
-            timer=null;
 
 
-        }
-
-    }
 }
 

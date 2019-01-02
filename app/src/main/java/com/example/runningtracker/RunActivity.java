@@ -31,7 +31,10 @@ public class RunActivity extends AppCompatActivity {
 
 */
     int distance;
+    String Distance;
     int overallDistance;
+    String Chronometer;
+
 
     int initialDistance;
 
@@ -54,7 +57,8 @@ public class RunActivity extends AppCompatActivity {
 
 
 
-                    Toast.makeText(context, ""+ distance, Toast.LENGTH_SHORT).show();
+
+
 
 //Average speed formula:
                     // speed = distance / Time
@@ -71,7 +75,7 @@ public class RunActivity extends AppCompatActivity {
         //int avg_speed = distance / time;
         //String avgSpeed = Integer.toString(avg_speed);
 
-        String Distance = Integer.toString(distance);
+        Distance = Integer.toString(distance);
         dbHelper.insertData(Distance, "asdfasdf");
 
 
@@ -121,14 +125,30 @@ public class RunActivity extends AppCompatActivity {
                 Intent i = new Intent(getApplicationContext(),GPSservice.class);
                 stopService(i);
                 chronometer.stop();
+                Chronometer = chronometer.getText().toString();
                // Toast.makeText(RunActivity.this, chronometer.getText().toString(), Toast.LENGTH_SHORT).show();
 
             }
         });
 
+
+
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
 
+        savedInstanceState.putString("DistanceSaved" ,Distance);
 
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        Distance = savedInstanceState.getString("DistanceSaved");
+
+    }
 }
 

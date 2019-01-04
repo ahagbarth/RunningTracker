@@ -1,10 +1,15 @@
 package com.example.runningtracker;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,27 +18,30 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DecimalFormat;
+
 public class RunActivity extends AppCompatActivity {
 
-    ImageButton button,button2;
-    private TextView textView;
+    ImageButton button,button2, button3;
+    private TextView textView, avgSpeed;
     private BroadcastReceiver broadcastReceiver;
 
+    //Chronometer
     Chronometer chronometer;
-/*
-    public enum State {
-        Running,
-        Paused,
-        Stopped
-    }
+    String Chronometer;
+    boolean Running;
+    long pauseTime;
+    float timeRunning;
 
-    protected State state;
-
-*/
     int distance;
     String Distance;
-    int overallDistance;
-    String Chronometer;
+
+    double averageSpeed;
+    String avg_Speed;
+
+    DecimalFormat df = new DecimalFormat("#.##");
+
+
 
 
     int initialDistance;
@@ -50,18 +58,10 @@ public class RunActivity extends AppCompatActivity {
                 @Override
                 public void onReceive(Context context, Intent intent) {
 
+                    //textView.setText("" +intent.getExtras().get("overallDistance"));
+
                     textView.setText("" +intent.getExtras().get("overallDistance"));
-
-
                     distance = intent.getIntExtra("overallDistance",1);
-
-
-
-
-
-
-//Average speed formula:
-                    // speed = distance / Time
 
 
                 }
@@ -76,10 +76,7 @@ public class RunActivity extends AppCompatActivity {
         //String avgSpeed = Integer.toString(avg_speed);
 
         Distance = Integer.toString(distance);
-        dbHelper.insertData(Distance, "asdfasdf");
-
-
-
+        dbHelper.insertData(Distance, "sdfsadf");
 
         super.onDestroy();
         if(broadcastReceiver != null){
@@ -92,28 +89,52 @@ public class RunActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_run);
 
-        //this.state = State.Stopped;
-
-        chronometer = findViewById(R.id.chronometer);
-
-
+        //Linking buttons with view
         button =  findViewById(R.id.imageButton);
         button2 = findViewById(R.id.imageButton2);
-        textView = (TextView) findViewById(R.id.textView);
+        button3 = findViewById(R.id.imageButton3);
+
+        textView = findViewById(R.id.textView);
+        avgSpeed = findViewById(R.id.avgSpeed);
+
+        //Chronometer
+        chronometer = findViewById(R.id.chronometer);
+        button3.setVisibility(View.GONE);
+
+
+
 
         int addedDistance;
 
+        if(!runtime_permissions())
+            enable_buttons();
+
+
+    }
+
+    private void enable_buttons() {
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(!Running) {
+                    //Start Service
+                    Intent i =new Intent(getApplicationContext(),GPSservice.class);
+                    startService(i);
 
-                Intent i =new Intent(getApplicationContext(),GPSservice.class);
-                startService(i);
-                chronometer.setBase(SystemClock.elapsedRealtime());
-                chronometer.start();
+                    //Start Chronometer
+                    chronometer.setBase(SystemClock.elapsedRealtime() - pauseTime);
+                    chronometer.start();
 
-                //button.setBackgroundResource(R.drawable.ic_stop_black_24dp);
+                    //Change Button
+                    button3.setVisibility(View.GONE);
+                    button2.setVisibility(View.VISIBLE);
+
+                    Running = true;
+
+
+                }
+
 
             }
         });
@@ -121,34 +142,89 @@ public class RunActivity extends AppCompatActivity {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (Running) {
 
-                Intent i = new Intent(getApplicationContext(),GPSservice.class);
-                stopService(i);
-                chronometer.stop();
-                Chronometer = chronometer.getText().toString();
+                    chronometer.stop();
+                    pauseTime = SystemClock.elapsedRealtime() - chronometer.getBase();
+
+                    button2.setVisibility(View.GONE);
+                    button3.setVisibility(View.VISIBLE);
+
+                    timeRunning = (SystemClock.elapsedRealtime() - chronometer.getBase());
+
+                   // Toast.makeText(RunActivity.this, "" + timeRunning, Toast.LENGTH_SHORT).show();
+                    averageSpeed = getAverageSpeed(distance, timeRunning);
+                    avgSpeed.setText(df.format(averageSpeed));
+
+
+
+
+                    Running = false;
+
+                }
+
+
+
+
+               // Chronometer = chronometer.getText().toString();
                // Toast.makeText(RunActivity.this, chronometer.getText().toString(), Toast.LENGTH_SHORT).show();
+
 
             }
         });
 
+        button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Stopping Service
+                Intent i = new Intent(getApplicationContext(),GPSservice.class);
+                stopService(i);
+
+                chronometer.stop();
+                chronometer.setBase(SystemClock.elapsedRealtime());
+                pauseTime = 0;
+            }
+        });
+
+    }
+    private double getAverageSpeed(double distance, float time) {
+
+        double s = distance;
+        float t = time;
+
+        double averageSpd = s / (t / 1000);
+
+
+        return averageSpd;
+       //avgSpeed.setText(df.format(avg_Speed));
+
 
 
     }
+
+    private boolean runtime_permissions() {
+        if(Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},100);
+
+            return true;
+        }
+        return false;
+    }
+
 
     @Override
-    protected void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-
-        savedInstanceState.putString("DistanceSaved" ,Distance);
-
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == 100){
+            if( grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED){
+                enable_buttons();
+            }else {
+                runtime_permissions();
+            }
+        }
     }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
 
-        Distance = savedInstanceState.getString("DistanceSaved");
-
-    }
 }
 

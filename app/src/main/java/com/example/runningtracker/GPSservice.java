@@ -28,6 +28,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class GPSservice extends Service {
+
     private LocationListener listener;
     private LocationManager locationManager;
 
@@ -38,7 +39,7 @@ public class GPSservice extends Service {
     private double oldLatitude;
 
     String CHANNEL_ID = "1";
-    int idNotification = 1;
+
 
 
 
@@ -71,13 +72,10 @@ public class GPSservice extends Service {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
-
-
-
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_running)
                 .setContentTitle("Running Tracker")
-                .setContentText("Time ran: " )
+                .setContentText("Tracking Run" )
                 .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true);
@@ -86,16 +84,13 @@ public class GPSservice extends Service {
         notificationManager.notify(1, mBuilder.build());
 
 
-    //
-
 
 //Handles The GPS aspect
 
         Toast.makeText(this, "Service Created", Toast.LENGTH_SHORT).show();
+
+
         locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-
-
-
 
         listener = new LocationListener() {
             @Override
@@ -159,6 +154,7 @@ public class GPSservice extends Service {
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 5, listener);
+
         if(locationManager!=null) {
             Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if (location!=null) {
@@ -166,6 +162,7 @@ public class GPSservice extends Service {
                 oldLongitude = location.getLongitude();
             }
         }
+
     }
 
 

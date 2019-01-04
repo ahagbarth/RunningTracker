@@ -45,8 +45,11 @@ public class ListAdapter extends BaseAdapter{
         TextView instructions = view.findViewById(R.id.instructions);
 
 
+
+
         title.setText(arrayRecipes.get(position).getTitle());
         instructions.setText(arrayRecipes.get(position).getInstructions());
+
 
 
 

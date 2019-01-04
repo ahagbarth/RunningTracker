@@ -24,9 +24,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE _recipes (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "title VARCHAR(128), " +
-                "instructions VARCHAR(128)," +
-                "rating INTEGER" +
-                ");");
+                "instructions VARCHAR(20));");
     }
 
     @Override
@@ -42,6 +40,7 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues content = new ContentValues();
         content.put("title",title);
         content.put("instructions",instructions);
+
 
         long     dataInserted = db.insert("_recipes",null,content);
         if(dataInserted == -1){
@@ -65,7 +64,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             recipe.setTitle(c.getString(1));
             recipe.setInstructions(c.getString(2));
-            recipe.setRating(c.getFloat(3));
+           // recipe.setAverageSpeed(c.getString(3));
         }
 
         db.close();
@@ -90,6 +89,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 recipe.setId(c.getInt(0));
                 recipe.setTitle(c.getString(1));
                 recipe.setInstructions(c.getString(2));
+               // recipe.setAverageSpeed(c.getString(3));
                 recipeList.add(recipe);
 
             } while (c.moveToNext());
@@ -109,12 +109,12 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    public boolean updateTable(int id, String rating){
+    public boolean updateTable(int id, String averageSpeed){
 
         db = this.getWritableDatabase();
 
         ContentValues content = new ContentValues();
-        content.put("rating",rating);
+        content.put("averageSpeed",averageSpeed);
         content.put("id",id);
 
         long result = db.update("_recipes", content,"id = ?", new String[] {String.valueOf(id)});

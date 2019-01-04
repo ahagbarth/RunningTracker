@@ -102,8 +102,6 @@ public class RunActivity extends AppCompatActivity {
         button3.setVisibility(View.GONE);
 
 
-
-
         int addedDistance;
 
         if(!runtime_permissions())
@@ -157,17 +155,9 @@ public class RunActivity extends AppCompatActivity {
                     avgSpeed.setText(df.format(averageSpeed));
 
 
-
-
                     Running = false;
 
                 }
-
-
-
-
-               // Chronometer = chronometer.getText().toString();
-               // Toast.makeText(RunActivity.this, chronometer.getText().toString(), Toast.LENGTH_SHORT).show();
 
 
             }

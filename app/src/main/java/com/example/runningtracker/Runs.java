@@ -6,7 +6,7 @@ public class Runs {
     int id;
     String title;
     String instructions;
-    Float rating;
+    String averageSpeed;
 
 
 
@@ -14,11 +14,11 @@ public class Runs {
 
     }
 
-    public Runs(int id, String title, String instructions, Float rating) {
+    public Runs(int id, String title, String instructions, String averageSpeed) {
         this.id = id;
         this.title = title;
         this.instructions = instructions;
-        this.rating = rating;
+        this.averageSpeed= averageSpeed;
 
     }
 
@@ -32,8 +32,8 @@ public class Runs {
     public String getInstructions() {
         return instructions;
     }
-    public Float getRating() {
-        return rating;
+    public String getAverageSpeed() {
+        return averageSpeed;
     }
 
 
@@ -46,7 +46,7 @@ public class Runs {
     public void setInstructions(String instructions) {
         this.instructions = instructions;
     }
-    public void setRating(Float rating) {
-        this.rating = rating;
+    public void setAverageSpeed(String averageSpeed) {
+        this.averageSpeed = averageSpeed;
     }
 }

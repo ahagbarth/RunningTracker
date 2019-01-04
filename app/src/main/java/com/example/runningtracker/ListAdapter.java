@@ -42,8 +42,12 @@ public class ListAdapter extends BaseAdapter{
         view = layoutInflater.inflate(R.layout.run_data_list, null);
 
         TextView title = view.findViewById(R.id.title);
+        TextView instructions = view.findViewById(R.id.instructions);
+
 
         title.setText(arrayRecipes.get(position).getTitle());
+        instructions.setText(arrayRecipes.get(position).getInstructions());
+
 
 
         return view;

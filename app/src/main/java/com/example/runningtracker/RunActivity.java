@@ -72,11 +72,11 @@ public class RunActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        //int avg_speed = distance / time;
-        //String avgSpeed = Integer.toString(avg_speed);
+
 
         Distance = Integer.toString(distance);
-        dbHelper.insertData(Distance, "sdfsadf");
+
+        dbHelper.insertData(Distance, df.format(timeRunning/60000));
 
         super.onDestroy();
         if(broadcastReceiver != null){

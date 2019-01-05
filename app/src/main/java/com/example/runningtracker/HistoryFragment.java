@@ -18,6 +18,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class HistoryFragment extends Fragment {
 
@@ -48,7 +49,7 @@ public class HistoryFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(getContext(), RunProfileActivity.class);
+                Intent intent = new Intent(getContext(), MapsActivity.class);
                 startActivity(intent);
             }
         });

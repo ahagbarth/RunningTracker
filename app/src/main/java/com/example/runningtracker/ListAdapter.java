@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class ListAdapter extends BaseAdapter{
@@ -43,12 +45,14 @@ public class ListAdapter extends BaseAdapter{
 
         TextView title = view.findViewById(R.id.title);
         TextView instructions = view.findViewById(R.id.instructions);
+        TextView date = view.findViewById(R.id.date);
 
 
 
 
         title.setText(arrayRecipes.get(position).getTitle());
         instructions.setText(arrayRecipes.get(position).getInstructions());
+        date.setText(arrayRecipes.get(position).getDate());
 
 
 

@@ -15,7 +15,7 @@ public class DBHelper extends SQLiteOpenHelper {
     SQLiteDatabase db;
 
     public DBHelper(Context context) {
-        super(context, "recipe_book.db", null, 1);
+        super(context, "recipe_book.db", null, 7);
     }
 
     @Override
@@ -24,7 +24,13 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE _recipes (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "title VARCHAR(128), " +
-                "instructions VARCHAR(20));");
+                "instructions VARCHAR(20), " +
+                "averageSpeed VARCHAR(20), " +
+                "initialLongitude FLOAT, " +
+                "initialLatitude FLOAT, " +
+                "endLongitude FLOAT, " +
+                "endLatitude FLOAT," +
+                "date VARCHAR(20));");
     }
 
     @Override
@@ -33,13 +39,19 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertData(String title,  String instructions){
+    public boolean insertData(String title,  String instructions, String averageSpeed, float initialLongitude, float initialLatitude, float endLongitude, float endLatitude, String date){
 
         db = this.getWritableDatabase();
 
         ContentValues content = new ContentValues();
         content.put("title",title);
         content.put("instructions",instructions);
+        content.put("averageSpeed",averageSpeed);
+        content.put("initialLongitude", initialLongitude);
+        content.put("initialLatitude", initialLatitude);
+        content.put("endLongitude", endLongitude);
+        content.put("endLatitude", endLatitude);
+        content.put("date", date);
 
 
         long     dataInserted = db.insert("_recipes",null,content);
@@ -64,7 +76,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
             recipe.setTitle(c.getString(1));
             recipe.setInstructions(c.getString(2));
-           // recipe.setAverageSpeed(c.getString(3));
+            recipe.setAverageSpeed(c.getString(3));
+            recipe.setInitialLongitude(c.getFloat(4));
+            recipe.setInitialLatitude(c.getFloat(5));
+            recipe.setEndLongitude(c.getFloat(6));
+            recipe.setEndLatitude(c.getFloat(7));
+            recipe.setDate(c.getString(8));
         }
 
         db.close();
@@ -76,7 +93,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public ArrayList<Runs> getRecipeList() {
         ArrayList<Runs> recipeList = new ArrayList<Runs>();
 
-        String Query = "SELECT  * FROM _recipes ORDER BY title DESC";
+        String Query = "SELECT  * FROM _recipes ORDER BY id ASC";
 
         db = this.getWritableDatabase();
         Cursor c = db.rawQuery(Query, null);
@@ -89,7 +106,12 @@ public class DBHelper extends SQLiteOpenHelper {
                 recipe.setId(c.getInt(0));
                 recipe.setTitle(c.getString(1));
                 recipe.setInstructions(c.getString(2));
-               // recipe.setAverageSpeed(c.getString(3));
+                recipe.setAverageSpeed(c.getString(3));
+                recipe.setInitialLongitude(c.getFloat(4));
+                recipe.setInitialLatitude(c.getFloat(5));
+                recipe.setEndLongitude(c.getFloat(6));
+                recipe.setEndLatitude(c.getFloat(7));
+                recipe.setDate(c.getString(8));
                 recipeList.add(recipe);
 
             } while (c.moveToNext());

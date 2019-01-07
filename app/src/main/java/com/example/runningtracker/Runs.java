@@ -9,16 +9,29 @@ public class Runs {
     String averageSpeed;
 
 
+    float initialLongitude;
+    float initialLatitude;
+    float endLongitude;
+    float endLatitude;
+
+    String Date;
+
+
 
     public Runs() {
 
     }
 
-    public Runs(int id, String title, String instructions, String averageSpeed) {
+    public Runs(int id, String title, String instructions, String averageSpeed, float initialLongitude, float initialLatitude, float endLongitude, float endLatitude, String Date) {
         this.id = id;
         this.title = title;
         this.instructions = instructions;
         this.averageSpeed= averageSpeed;
+        this.initialLongitude = initialLongitude;
+        this.initialLatitude = initialLatitude;
+        this.endLongitude = endLongitude;
+        this.endLatitude = endLatitude;
+        this.Date = Date;
 
     }
 
@@ -36,6 +49,45 @@ public class Runs {
         return averageSpeed;
     }
 
+    public float getInitialLongitude() {
+        return initialLongitude;
+    }
+
+    public void setInitialLongitude(float initialLongitude) {
+        this.initialLongitude = initialLongitude;
+    }
+
+    public float getInitialLatitude() {
+        return initialLatitude;
+    }
+
+    public void setInitialLatitude(float initialLatitude) {
+        this.initialLatitude = initialLatitude;
+    }
+
+    public float getEndLongitude() {
+        return endLongitude;
+    }
+
+    public void setEndLongitude(float endLongitude) {
+        this.endLongitude = endLongitude;
+    }
+
+    public float getEndLatitude() {
+        return endLatitude;
+    }
+
+    public void setEndLatitude(float endLatitude) {
+        this.endLatitude = endLatitude;
+    }
+
+    public String getDate() {
+        return Date;
+    }
+
+    public void setDate(String date) {
+        Date = date;
+    }
 
     public void setId(int id) {
         this.id = id;

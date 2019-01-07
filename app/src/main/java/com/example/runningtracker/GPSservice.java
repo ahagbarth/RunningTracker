@@ -40,7 +40,11 @@ public class GPSservice extends Service {
 
     String CHANNEL_ID = "1";
 
+    float initialLongitude;
+    float initialLatitude;
 
+    float endLongitude;
+    float endLatitude;
 
 
     @Override
@@ -87,10 +91,34 @@ public class GPSservice extends Service {
 
 //Handles The GPS aspect
 
+        //noinspection MissingPermission
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+
         Toast.makeText(this, "Service Created", Toast.LENGTH_SHORT).show();
 
 
         locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+
+        if(locationManager!=null) {
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (location!=null) {
+                oldLatitude = location.getLatitude();
+                oldLongitude = location.getLongitude();
+
+                initialLatitude = (float)location.getLatitude();
+                initialLongitude = (float)location.getLongitude();
+
+            }
+        }
 
         listener = new LocationListener() {
             @Override
@@ -104,21 +132,22 @@ public class GPSservice extends Service {
 
                 overallDistance = overallDistance + Distance;
 
+                endLongitude = (float)newLongitude;
+                endLatitude = (float)newLatitude;
+
                 Intent i = new Intent("location_update");
                 //i.putExtra("coordinates", Distance);
                 i.putExtra("overallDistance", overallDistance);
+                i.putExtra("initialLongitude", initialLongitude);
+                i.putExtra("initialLatitude",initialLatitude);
+                i.putExtra("endLongitude", endLongitude);
+                i.putExtra("endLatitude", endLatitude);
                 sendBroadcast(i);
 
-                Toast.makeText(GPSservice.this, "" + overallDistance, Toast.LENGTH_SHORT).show();
+
                 oldLongitude = newLongitude;
                 oldLatitude = newLatitude;
 
-
-/*
-                Intent i = new Intent("location_update");
-                i.putExtra("coordinates", location.getLongitude() + " " + location.getLatitude());
-                sendBroadcast(i);
-*/
 
             }
 
@@ -142,47 +171,15 @@ public class GPSservice extends Service {
 
 
 
-        //noinspection MissingPermission
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 5, listener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5, 5, listener);
 
-        if(locationManager!=null) {
-            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if (location!=null) {
-                oldLatitude = location.getLatitude();
-                oldLongitude = location.getLongitude();
-            }
-        }
+
 
     }
 
 
     protected double distanceCalculated(double oldLongitude, double newLongitude,double oldLatitude, double newLatitude) {
-/*
-        final int R = 6371; // Radius of the earth
 
-        double latDistance = Math.toRadians(newLatitude - oldLatitude);
-        double lonDistance = Math.toRadians(newLongitude - oldLongitude);
-        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-                + Math.cos(Math.toRadians(oldLatitude)) * Math.cos(Math.toRadians(newLatitude))
-                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        double distance = R * c * 1000; // convert to meters
-
-
-
-        distance = Math.pow(distance, 2);
-
-*/
         Location locationA = new Location("LocationA");
         locationA.setLatitude(oldLatitude);
         locationA.setLongitude(oldLongitude);

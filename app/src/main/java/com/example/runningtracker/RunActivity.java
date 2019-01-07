@@ -19,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class RunActivity extends AppCompatActivity {
 
@@ -37,14 +39,20 @@ public class RunActivity extends AppCompatActivity {
     String Distance;
 
     double averageSpeed;
-    String avg_Speed;
+
+    float initialLatitude;
+    float initialLongitude;
+    float endLatitude;
+    float endLongitude;
+    Calendar calendar = Calendar.getInstance();
+
 
     DecimalFormat df = new DecimalFormat("#.##");
+    SimpleDateFormat mdformat = new SimpleDateFormat("dd / MM / yyyy ");
 
 
 
 
-    int initialDistance;
 
     DBHelper dbHelper = new DBHelper(this);
 
@@ -62,6 +70,12 @@ public class RunActivity extends AppCompatActivity {
 
                     textView.setText("" +intent.getExtras().get("overallDistance"));
                     distance = intent.getIntExtra("overallDistance",1);
+                    initialLatitude = intent.getFloatExtra("initialLatitude", 1);
+                    initialLongitude = intent.getFloatExtra("initialLongitude", 1);
+                    endLongitude = intent.getFloatExtra("endLongitude",1);
+                    endLatitude = intent.getFloatExtra("endLatitude", 1);
+
+
 
 
                 }
@@ -73,10 +87,13 @@ public class RunActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
 
+        //Calendar
+        String date =  mdformat.format(calendar.getTime());
+
 
         Distance = Integer.toString(distance);
 
-        dbHelper.insertData(Distance, df.format(timeRunning/60000));
+        dbHelper.insertData(Distance, df.format(timeRunning/60000), df.format(averageSpeed), initialLongitude, initialLatitude, endLongitude, endLatitude, date);
 
         super.onDestroy();
         if(broadcastReceiver != null){
@@ -100,6 +117,7 @@ public class RunActivity extends AppCompatActivity {
         //Chronometer
         chronometer = findViewById(R.id.chronometer);
         button3.setVisibility(View.GONE);
+
 
 
         int addedDistance;

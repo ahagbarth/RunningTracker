@@ -29,6 +29,8 @@ public class HistoryFragment extends Fragment {
     //ListAdapter adapter;
 
 
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -39,7 +41,6 @@ public class HistoryFragment extends Fragment {
 
         runList = dbHelper.getRecipeList();
 
-       // String[] menuItems = {"do omething", "do something else", "do yet another thing"};
 
         ListView listView = (ListView) view.findViewById(R.id.listView);
 
@@ -50,27 +51,13 @@ public class HistoryFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Intent intent = new Intent(getContext(), MapsActivity.class);
-                intent.putExtra("position",position);
+                intent.putExtra("position",position + 1 );
                 startActivity(intent);
             }
         });
 
 
-/*
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);
 
-        List<String> list= Arrays.asList(getResources().getStringArray(R.array.android_versions));
-
-        RecyclerAdapter adapter = new RecyclerAdapter(list);
-
-        recyclerView.setHasFixedSize(true);
-
-        recyclerView.setAdapter(adapter);
-
-
-*/
 
 
 

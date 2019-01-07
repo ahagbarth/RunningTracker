@@ -39,17 +39,24 @@
         android:id="@+id/instructions"
         android:layout_width="wrap_content"
         android:layout_height="42dp"
-        android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/title"
-        android:layout_marginEnd="88dp"
+        android:layout_centerHorizontal="true"
         android:text="00:00" />
 
     <TextView
-        android:id="@+id/textView12"
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="42dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/title"
+        android:layout_marginEnd="23dp"
+        android:text="dd:mm:yyyy" />
+
+    <TextView
+        android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="42dp"
         android:layout_alignTop="@+id/title"
-        android:layout_marginStart="-88dp"
         android:layout_toEndOf="@+id/instructions"
         android:text="min" />
 

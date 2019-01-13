@@ -1,6 +1,8 @@
 package com.example.runningtracker;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +16,7 @@ import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,6 +31,8 @@ public class HistoryFragment extends Fragment {
     //private RecyclerAdapter adapter;
     //ListAdapter adapter;
 
+    TextView totalDistance;
+
 
 
 
@@ -38,7 +43,7 @@ public class HistoryFragment extends Fragment {
 
         DBHelper dbHelper = new DBHelper(getContext());
         ArrayList<Runs> runList;
-
+        totalDistance = view.findViewById(R.id.totalDistance);
         runList = dbHelper.getRecipeList();
 
 
@@ -55,6 +60,8 @@ public class HistoryFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+
 
 
 

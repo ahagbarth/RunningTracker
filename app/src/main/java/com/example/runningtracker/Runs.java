@@ -5,7 +5,7 @@ import android.widget.TextView;
 public class Runs {
     int id;
     String distance;
-    String instructions;
+    String time;
     String averageSpeed;
 
 
@@ -22,10 +22,10 @@ public class Runs {
 
     }
 
-    public Runs(int id, String distance, String instructions, String averageSpeed, float initialLongitude, float initialLatitude, float endLongitude, float endLatitude, String Date) {
+    public Runs(int id, String distance, String time, String averageSpeed, float initialLongitude, float initialLatitude, float endLongitude, float endLatitude, String Date) {
         this.id = id;
         this.distance = distance;
-        this.instructions = instructions;
+        this.time = time;
         this.averageSpeed= averageSpeed;
         this.initialLongitude = initialLongitude;
         this.initialLatitude = initialLatitude;
@@ -42,8 +42,8 @@ public class Runs {
     public String getDistance() {
         return distance;
     }
-    public String getInstructions() {
-        return instructions;
+    public String getTime() {
+        return time;
     }
     public String getAverageSpeed() {
         return averageSpeed;
@@ -95,8 +95,8 @@ public class Runs {
     public void setDistance(String distance) {
         this.distance = distance;
     }
-    public void setInstructions(String instructions) {
-        this.instructions = instructions;
+    public void setTime(String instructions) {
+        this.time = instructions;
     }
     public void setAverageSpeed(String averageSpeed) {
         this.averageSpeed = averageSpeed;

@@ -42,14 +42,14 @@ public class ListAdapter extends BaseAdapter{
         view = layoutInflater.inflate(R.layout.run_data_list, null);
 
         TextView distance = view.findViewById(R.id.distance);
-        TextView instructions = view.findViewById(R.id.instructions);
+        TextView time = view.findViewById(R.id.time);
         TextView date = view.findViewById(R.id.date);
 
 
 
 
         distance.setText(arrayRecipes.get(position).getDistance());
-        instructions.setText(arrayRecipes.get(position).getInstructions());
+        time.setText(arrayRecipes.get(position).getTime());
         date.setText(arrayRecipes.get(position).getDate());
 
 

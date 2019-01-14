@@ -29,20 +29,19 @@ import java.util.TimerTask;
 
 public class GPSservice extends Service {
 
+    //Declare location services
     private LocationListener listener;
     private LocationManager locationManager;
 
-
-    int overallDistance;
-
-    private double oldLongitude;
-    private double oldLatitude;
-
+    //for Notification
     String CHANNEL_ID = "1";
 
+    //Declare all values for user location and distance
+    int overallDistance;
+    private double oldLongitude;
+    private double oldLatitude;
     float initialLongitude;
     float initialLatitude;
-
     float endLongitude;
     float endLatitude;
 
@@ -59,7 +58,7 @@ public class GPSservice extends Service {
     //Creates the notification for when service is activated
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
-
+        //Create channel and set the importance
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "Running Tracker";
             String description = "Tracking Run";
@@ -72,10 +71,12 @@ public class GPSservice extends Service {
             notificationManager2.createNotificationChannel(channel);
         }
 
+        //Set Notification tap action
         Intent intent = new Intent(this, RunActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
+        //Set notification content
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_running)
                 .setContentTitle("Running Tracker")
@@ -89,7 +90,7 @@ public class GPSservice extends Service {
 
 
 
-//Handles The GPS aspect
+
 
         //noinspection MissingPermission
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -103,9 +104,9 @@ public class GPSservice extends Service {
             return;
         }
 
-        Toast.makeText(this, "Service Created", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Run has Started", Toast.LENGTH_SHORT).show();
 
-
+        //Retrieve system service for location
         locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 
         if(locationManager!=null) {

@@ -15,7 +15,7 @@ public class DBHelper extends SQLiteOpenHelper {
     SQLiteDatabase db;
 
     public DBHelper(Context context) {
-        super(context, "recipe_book.db", null, 7);
+        super(context, "runs.db", null, 7);
     }
 
     @Override

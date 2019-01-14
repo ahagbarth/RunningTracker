@@ -17,16 +17,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        //Declaring the bottom navigation bar
         BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
-        bottomNav.setOnNavigationItemSelectedListener(navListener);
+        bottomNav.setOnNavigationItemSelectedListener(navBarListener);
 
+        //Setting HomeFragment as first fragment to appear when app is loaded
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
 
 
     }
 
-    private BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+    //
+    private BottomNavigationView.OnNavigationItemSelectedListener navBarListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 

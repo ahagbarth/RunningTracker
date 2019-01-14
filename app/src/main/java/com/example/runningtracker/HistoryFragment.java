@@ -25,12 +25,6 @@ import java.util.Map;
 
 public class HistoryFragment extends Fragment {
 
-    //private RecyclerView recyclerView;
-    //private RecyclerView.LayoutManager layoutManager;
-    //private List<String> list;
-    //private RecyclerAdapter adapter;
-    //ListAdapter adapter;
-
     TextView totalDistance;
 
 

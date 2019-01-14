@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -24,8 +23,8 @@ import java.util.Calendar;
 
 public class RunActivity extends AppCompatActivity {
 
-    ImageButton button,button2, button3;
-    private TextView textView, avgSpeed;
+    ImageButton startRun, pauseRun, stopRun;
+    private TextView distanceRan, avgSpeed;
     private BroadcastReceiver broadcastReceiver;
 
     //Chronometer
@@ -68,7 +67,7 @@ public class RunActivity extends AppCompatActivity {
 
                     //textView.setText("" +intent.getExtras().get("overallDistance"));
 
-                    textView.setText("" +intent.getExtras().get("overallDistance"));
+                    distanceRan.setText("" +intent.getExtras().get("overallDistance"));
                     distance = intent.getIntExtra("overallDistance",1);
                     initialLatitude = intent.getFloatExtra("initialLatitude", 1);
                     initialLongitude = intent.getFloatExtra("initialLongitude", 1);
@@ -107,16 +106,16 @@ public class RunActivity extends AppCompatActivity {
         setContentView(R.layout.activity_run);
 
         //Linking buttons with view
-        button =  findViewById(R.id.imageButton);
-        button2 = findViewById(R.id.imageButton2);
-        button3 = findViewById(R.id.imageButton3);
+        startRun =  findViewById(R.id.startRun);
+        pauseRun = findViewById(R.id.pauseRun);
+        stopRun = findViewById(R.id.stopRun);
 
-        textView = findViewById(R.id.textView);
+        distanceRan = findViewById(R.id.distanceRan);
         avgSpeed = findViewById(R.id.avgSpeed);
 
         //Chronometer
         chronometer = findViewById(R.id.chronometer);
-        button3.setVisibility(View.GONE);
+        stopRun.setVisibility(View.GONE);
 
 
 
@@ -130,7 +129,7 @@ public class RunActivity extends AppCompatActivity {
 
     private void enable_buttons() {
 
-        button.setOnClickListener(new View.OnClickListener() {
+        startRun.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(!Running) {
@@ -143,8 +142,8 @@ public class RunActivity extends AppCompatActivity {
                     chronometer.start();
 
                     //Change Button
-                    button3.setVisibility(View.GONE);
-                    button2.setVisibility(View.VISIBLE);
+                    stopRun.setVisibility(View.GONE);
+                    pauseRun.setVisibility(View.VISIBLE);
 
                     Running = true;
 
@@ -155,7 +154,7 @@ public class RunActivity extends AppCompatActivity {
             }
         });
 
-        button2.setOnClickListener(new View.OnClickListener() {
+        pauseRun.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (Running) {
@@ -163,8 +162,8 @@ public class RunActivity extends AppCompatActivity {
                     chronometer.stop();
                     pauseTime = SystemClock.elapsedRealtime() - chronometer.getBase();
 
-                    button2.setVisibility(View.GONE);
-                    button3.setVisibility(View.VISIBLE);
+                    pauseRun.setVisibility(View.GONE);
+                    stopRun.setVisibility(View.VISIBLE);
 
                     timeRunning = (SystemClock.elapsedRealtime() - chronometer.getBase());
 
@@ -181,7 +180,7 @@ public class RunActivity extends AppCompatActivity {
             }
         });
 
-        button3.setOnClickListener(new View.OnClickListener() {
+        stopRun.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Stopping Service

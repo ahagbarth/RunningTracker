@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 public class ListAdapter extends BaseAdapter{
@@ -43,14 +41,14 @@ public class ListAdapter extends BaseAdapter{
     public View getView(int position, View view, ViewGroup parent) {
         view = layoutInflater.inflate(R.layout.run_data_list, null);
 
-        TextView title = view.findViewById(R.id.title);
+        TextView distance = view.findViewById(R.id.distance);
         TextView instructions = view.findViewById(R.id.instructions);
         TextView date = view.findViewById(R.id.date);
 
 
 
 
-        title.setText(arrayRecipes.get(position).getTitle());
+        distance.setText(arrayRecipes.get(position).getDistance());
         instructions.setText(arrayRecipes.get(position).getInstructions());
         date.setText(arrayRecipes.get(position).getDate());
 

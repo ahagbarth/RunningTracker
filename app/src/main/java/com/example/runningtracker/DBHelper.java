@@ -15,15 +15,15 @@ public class DBHelper extends SQLiteOpenHelper {
     SQLiteDatabase db;
 
     public DBHelper(Context context) {
-        super(context, "runs.db", null, 7);
+        super(context, "runs.db", null, 9);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        db.execSQL("CREATE TABLE _recipes (" +
+        db.execSQL("CREATE TABLE _runs (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "title VARCHAR(128), " +
+                "distance VARCHAR(128), " +
                 "instructions VARCHAR(20), " +
                 "averageSpeed VARCHAR(20), " +
                 "initialLongitude FLOAT, " +
@@ -35,16 +35,16 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS _recipes " );
+        db.execSQL("DROP TABLE IF EXISTS _runs " );
         onCreate(db);
     }
 
-    public boolean insertData(String title,  String instructions, String averageSpeed, float initialLongitude, float initialLatitude, float endLongitude, float endLatitude, String date){
+    public boolean insertData(String distance,  String instructions, String averageSpeed, float initialLongitude, float initialLatitude, float endLongitude, float endLatitude, String date){
 
         db = this.getWritableDatabase();
 
         ContentValues content = new ContentValues();
-        content.put("title",title);
+        content.put("distance",distance);
         content.put("instructions",instructions);
         content.put("averageSpeed",averageSpeed);
         content.put("initialLongitude", initialLongitude);
@@ -54,7 +54,7 @@ public class DBHelper extends SQLiteOpenHelper {
         content.put("date", date);
 
 
-        long     dataInserted = db.insert("_recipes",null,content);
+        long     dataInserted = db.insert("_runs",null,content);
         if(dataInserted == -1){
             return false;
         }else{
@@ -63,7 +63,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
     public Runs getRecipe(int id) {
 
-        String Query = "SELECT  * FROM _recipes WHERE id = " + id;
+        String Query = "SELECT  * FROM _runs WHERE id = " + id;
 
         db = this.getWritableDatabase();
 
@@ -74,7 +74,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             recipe.setId(c.getInt(0));
 
-            recipe.setTitle(c.getString(1));
+            recipe.setDistance(c.getString(1));
             recipe.setInstructions(c.getString(2));
             recipe.setAverageSpeed(c.getString(3));
             recipe.setInitialLongitude(c.getFloat(4));
@@ -93,7 +93,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public ArrayList<Runs> getRecipeList() {
         ArrayList<Runs> recipeList = new ArrayList<Runs>();
 
-        String Query = "SELECT  * FROM _recipes ORDER BY id ASC";
+        String Query = "SELECT  * FROM _runs ORDER BY id ASC";
 
         db = this.getWritableDatabase();
         Cursor c = db.rawQuery(Query, null);
@@ -104,7 +104,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
                 Runs recipe = new Runs();
                 recipe.setId(c.getInt(0));
-                recipe.setTitle(c.getString(1));
+                recipe.setDistance(c.getString(1));
                 recipe.setInstructions(c.getString(2));
                 recipe.setAverageSpeed(c.getString(3));
                 recipe.setInitialLongitude(c.getFloat(4));
@@ -127,7 +127,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void deleteRecipe(int id) {
 
         db = this.getWritableDatabase();
-        db.delete("_recipes", "id = ?", new String[] {String.valueOf(id)});
+        db.delete("_runs", "id = ?", new String[] {String.valueOf(id)});
 
         db.close();
     }
@@ -141,7 +141,7 @@ public class DBHelper extends SQLiteOpenHelper {
         content.put("averageSpeed",averageSpeed);
         content.put("id",id);
 
-        long result = db.update("_recipes", content,"id = ?", new String[] {String.valueOf(id)});
+        long result = db.update("_runs", content,"id = ?", new String[] {String.valueOf(id)});
         if(result == -1){
             return false;
         }else{
